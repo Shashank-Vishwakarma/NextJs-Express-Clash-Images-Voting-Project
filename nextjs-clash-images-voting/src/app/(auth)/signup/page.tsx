@@ -35,6 +35,17 @@ export default function SignUp() {
                     </div>
 
                     <div className="mt-4">
+                        <Label htmlFor="confirmPassword">
+                            Confirm Password
+                        </Label>
+                        <Input
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm Password"
+                        />
+                    </div>
+
+                    <div className="mt-4">
                         <Button type="submit" className="w-full">
                             Create Account
                         </Button>
