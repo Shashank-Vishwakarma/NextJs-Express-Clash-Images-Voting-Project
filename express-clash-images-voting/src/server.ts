@@ -29,6 +29,11 @@ app.use(
 // middleware for response headers
 app.use(helmet());
 
-app.listen(ENV_VARS.PORT, () => {
-    console.log(`Express server listening on port ${ENV_VARS.PORT}`);
+// bullmq workers to consume the jobs
+import "./queue/jobs.js";
+
+app.listen(ENV_VARS.APPLICATION_PORT, () => {
+    console.log(
+        `Express server listening on port ${ENV_VARS.APPLICATION_PORT}`
+    );
 });

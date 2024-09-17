@@ -1,7 +1,12 @@
 import nodemailer from "nodemailer";
-import { ENV_VARS } from "../utils/envVariables.js";
+import ejs from "ejs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-export const transporter = nodemailer.createTransport({
+import { ENV_VARS } from "../utils/envVariables.js";
+import { Email } from "../types/emailType.js";
+
+const transporter = nodemailer.createTransport({
     host: ENV_VARS.SMTP_HOST,
     port: ENV_VARS.SMTP_PORT,
     secure: false,
@@ -10,3 +15,25 @@ export const transporter = nodemailer.createTransport({
         pass: ENV_VARS.SMTP_PASSWORD,
     },
 });
+
+export async function sendEmail(email: Email) {
+    try {
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        const htmlBody = await ejs.renderFile(
+            path.resolve(__dirname, "../views/emails/welcomeEmail.ejs"),
+            { name: email.to }
+        );
+
+        const info = await transporter.sendMail({
+            from: ENV_VARS.FROM_EMAIL,
+            to: email.to,
+            subject: email.subject,
+            html: htmlBody,
+        });
+
+        return { messageId: info.messageId };
+    } catch (error) {
+        console.log("Error sending the email: ", error);
+        return { error: error.message };
+    }
+}
