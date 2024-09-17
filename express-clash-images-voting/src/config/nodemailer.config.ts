@@ -25,9 +25,7 @@ export async function sendEmail(email: Email) {
         );
 
         const info = await transporter.sendMail({
-            from: ENV_VARS.FROM_EMAIL,
-            to: email.to,
-            subject: email.subject,
+            ...email,
             html: htmlBody,
         });
 
