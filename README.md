@@ -7,3 +7,5 @@
 4. Prisma ORM
 5. PostgreSQL
 6. Shadcn UI
+7. EJS View Engine
+8. Nodemailer
