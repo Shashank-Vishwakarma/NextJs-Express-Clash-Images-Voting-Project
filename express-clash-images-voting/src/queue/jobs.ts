@@ -1,1 +1,1 @@
-import "./emailQueue/producer.js";
+import "./emailQueue/worker.js";

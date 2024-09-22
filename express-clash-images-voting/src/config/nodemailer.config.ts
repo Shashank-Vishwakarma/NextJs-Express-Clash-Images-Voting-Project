@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { ENV_VARS } from "../utils/envVariables.js";
-import { Email } from "../types/emailType.js";
+import { Email, VERIFY_EMAIL, WELCOME_EMAIL } from "../types/emailType.js";
 
 const transporter = nodemailer.createTransport({
     host: ENV_VARS.SMTP_HOST,
@@ -16,13 +16,32 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export async function sendEmail(email: Email) {
+export async function sendEmail(email: Email, type: number) {
     try {
         const __dirname = path.dirname(fileURLToPath(import.meta.url));
-        const htmlBody = await ejs.renderFile(
-            path.resolve(__dirname, "../views/emails/welcomeEmail.ejs"),
-            { name: email.to }
-        );
+
+        let htmlBody = "";
+        switch (type) {
+            case VERIFY_EMAIL:
+                htmlBody = await ejs.renderFile(
+                    path.resolve(
+                        __dirname,
+                        "../views/emails/emailVerification.ejs"
+                    ),
+                    { token: email.token, email: email.to }
+                );
+                break;
+
+            case WELCOME_EMAIL:
+                htmlBody = await ejs.renderFile(
+                    path.resolve(__dirname, "../views/emails/welcomeEmail.ejs"),
+                    { name: email.to }
+                );
+                break;
+
+            default:
+                break;
+        }
 
         const info = await transporter.sendMail({
             ...email,

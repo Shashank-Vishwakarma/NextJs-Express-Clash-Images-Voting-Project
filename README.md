@@ -12,3 +12,4 @@
 9. Redis
 10. BullMQ
 11. Kafka
+12. WebSocket

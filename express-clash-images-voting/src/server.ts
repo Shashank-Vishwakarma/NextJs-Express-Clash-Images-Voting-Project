@@ -5,6 +5,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { ENV_VARS } from "./utils/envVariables.js";
+import authRouter from "./routes/auth.routes.js";
+
+// bullmq workers to consume the jobs
+import "./queue/jobs.js";
 
 const app: Application = express();
 
@@ -29,8 +33,8 @@ app.use(
 // middleware for response headers
 app.use(helmet());
 
-// bullmq workers to consume the jobs
-import "./queue/jobs.js";
+// auth routes
+app.use("/api/v1/auth", authRouter);
 
 app.listen(ENV_VARS.APPLICATION_PORT, () => {
     console.log(

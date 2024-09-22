@@ -9,7 +9,7 @@ const worker = new Worker(
     async (job: Job) => {
         try {
             const email: Email = job.data;
-            await sendEmail(email);
+            await sendEmail(email, email.type);
         } catch (error) {
             throw error;
         }
@@ -18,9 +18,11 @@ const worker = new Worker(
 );
 
 worker.on("completed", async (job) => {
-    console.log("Email sent to: ", job.data.email);
+    const email: Email = job.data;
+    console.log("Email sent to: ", email.to);
 });
 
 worker.on("failed", async (job) => {
-    console.log("Email failed to send to: ", job.data.email);
+    const email: Email = job.data;
+    console.log("Email failed to send to: ", email.to);
 });
