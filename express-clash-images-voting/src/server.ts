@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import path from "path";
 import { fileURLToPath } from "url";
+import cookieParser from "cookie-parser";
 
 import { ENV_VARS } from "./utils/envVariables.js";
 import authRouter from "./routes/auth.routes.js";
@@ -21,6 +22,9 @@ app.set("views", path.resolve(__dirname, "./views"));
 // middleware to parse req.body
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// middleware to parse cookies
+app.use(cookieParser());
 
 // middleware for cors
 app.use(
