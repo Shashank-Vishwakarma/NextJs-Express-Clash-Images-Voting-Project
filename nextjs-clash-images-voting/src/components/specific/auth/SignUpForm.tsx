@@ -4,6 +4,7 @@ import { signupAction } from "@/actions/authActions";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import toast from "react-hot-toast";
 
@@ -15,11 +16,13 @@ export default function SignUpForm() {
     const { pending } = useFormStatus();
     const [state, signupFormAction] = useFormState(signupAction, initialState);
 
-    if (state?.error) {
-        toast.error(state?.error);
-    } else if (state?.success) {
-        toast.success(state?.message);
-    }
+    useEffect(() => {
+        if (state?.error) {
+            toast.error(state?.error);
+        } else if (state?.success) {
+            toast.success(state?.message);
+        }
+    }, [state]);
 
     return (
         <form action={signupFormAction}>

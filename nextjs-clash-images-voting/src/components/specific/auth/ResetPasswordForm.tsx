@@ -5,6 +5,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import toast from "react-hot-toast";
 
@@ -19,12 +20,14 @@ export default function ResetPasswordForm() {
         initialState
     );
 
-    if (state?.error) {
-        toast.error(state?.error);
-    } else if (state?.success) {
-        toast.success(state?.message);
-        redirect("/login");
-    }
+    useEffect(() => {
+        if (state?.error) {
+            toast.error(state?.error);
+        } else if (state?.success) {
+            toast.success(state?.message);
+            redirect("/login");
+        }
+    }, [state]);
 
     return (
         <form action={resetPasswordFormAction}>

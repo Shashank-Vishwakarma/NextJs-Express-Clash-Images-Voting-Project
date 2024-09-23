@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import toast from "react-hot-toast";
 
@@ -17,12 +18,14 @@ export default function LoginForm() {
     const { pending } = useFormStatus();
     const [state, loginFormAction] = useFormState(loginAction, initialState);
 
-    if (state?.error) {
-        toast.error(state?.error);
-    } else if (state?.success) {
-        toast.success(state?.message);
-        redirect("/");
-    }
+    useEffect(() => {
+        if (state?.error) {
+            toast.error(state?.error);
+        } else if (state?.success) {
+            toast.success(state?.message);
+            redirect("/");
+        }
+    }, [state]);
 
     return (
         <form action={loginFormAction}>
