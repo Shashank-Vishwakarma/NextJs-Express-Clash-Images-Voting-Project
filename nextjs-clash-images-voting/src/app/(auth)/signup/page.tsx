@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import SignUpForm from "@/components/specific/auth/SignUpForm";
 import Link from "next/link";
 
 export default function SignUp() {
@@ -14,43 +12,7 @@ export default function SignUp() {
                     Create a new account
                 </h1>
 
-                <form>
-                    <div className="mt-4">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" name="name" placeholder="Name" />
-                    </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" placeholder="Email" />
-                    </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            name="password"
-                            placeholder="Password"
-                        />
-                    </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="confirmPassword">
-                            Confirm Password
-                        </Label>
-                        <Input
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            placeholder="Confirm Password"
-                        />
-                    </div>
-
-                    <div className="mt-4">
-                        <Button type="submit" className="w-full">
-                            Create Account
-                        </Button>
-                    </div>
-                </form>
+                <SignUpForm />
 
                 <div className="m-2">
                     <p className="text-center">

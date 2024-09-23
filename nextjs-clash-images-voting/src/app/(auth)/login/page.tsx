@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import LoginForm from "@/components/specific/auth/LoginForm";
 import Link from "next/link";
 
 export default function Login() {
@@ -14,35 +12,7 @@ export default function Login() {
                     Login
                 </h1>
 
-                <form action="">
-                    <div className="mt-4">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" placeholder="Email" />
-                    </div>
-
-                    <div className="mt-4">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            name="password"
-                            placeholder="Password"
-                        />
-                    </div>
-
-                    <div className="mt-2">
-                        <Link href={"/forgot-password"}>
-                            <span className="text-blue-700 cursor-pointer font-medium">
-                                Forgot password?
-                            </span>
-                        </Link>
-                    </div>
-
-                    <div className="mt-4">
-                        <Button type="submit" className="w-full">
-                            Login
-                        </Button>
-                    </div>
-                </form>
+                <LoginForm />
 
                 <div className="text-center m-2">
                     <p>
