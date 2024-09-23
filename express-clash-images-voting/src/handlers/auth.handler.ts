@@ -214,13 +214,7 @@ class AuthHandler {
                 },
             });
 
-            return response
-                .status(200)
-                .json({
-                    success: true,
-                    message: "Email verified successfully. Please sign in.",
-                })
-                .redirect(`${ENV_VARS.CLIENT_APP_URL}/login`);
+            return response.redirect(`${ENV_VARS.CLIENT_APP_URL}/login`);
         } catch (error) {
             console.log("Error in verifyEmail: ", error);
             return response.status(500).json({
@@ -291,9 +285,9 @@ class AuthHandler {
     static async resetPassword(request: Request, response: Response) {
         const { resetToken, email, newPassword, confirmNewPassword } =
             request.body;
-        if (!resetToken) {
+        if (!resetToken || !email || !newPassword || !confirmNewPassword) {
             return response.status(404).json({
-                error: "Reset token not found.",
+                error: "All the fields are required",
             });
         }
 
@@ -340,12 +334,11 @@ class AuthHandler {
                 },
             });
 
-            return response.status(200).json({
-                success: true,
-                message: "Password Reset Successful",
-            });
+            return response
+                .json({ success: true, message: "Password reset successfully" })
+                .redirect(`${ENV_VARS.CLIENT_APP_URL}/login`);
         } catch (error) {
-            console.log("Error in resetPassword: ", error);
+            console.log("Error in resetPassword: ", error.message);
             return response.status(500).json({
                 error: "Internal server error",
             });
