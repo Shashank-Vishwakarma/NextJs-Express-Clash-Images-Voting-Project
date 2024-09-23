@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import {
     loginSchemaValidation,
+    resetPasswordSchemaValidation,
     signUpSchemaValidation,
 } from "../validations/authSchema.validation.js";
 import prisma from "../database/prisma.js";
@@ -10,7 +11,7 @@ import { ZodError } from "zod";
 import { generateToken } from "../utils/generateToken.js";
 import { addEmailToQueue } from "../queue/emailQueue/producer.js";
 import { ENV_VARS } from "../utils/envVariables.js";
-import { Email, VERIFY_EMAIL } from "../types/emailType.js";
+import { Email, PASSWORD_RESET, VERIFY_EMAIL } from "../types/emailType.js";
 
 class AuthHandler {
     static async signup(request: Request, response: Response) {
@@ -224,7 +225,128 @@ class AuthHandler {
         }
     }
 
-    static async forgotPassword(request: Request, response: Response) {}
+    static async generateResetToken(request: Request, response: Response) {
+        const { email } = request.body;
+        if (!email) {
+            return response.status(400).json({
+                error: "Email is required",
+            });
+        }
+
+        try {
+            const user = await prisma.user.findUnique({
+                where: { email },
+            });
+            if (!user) {
+                return response.status(404).json({
+                    error: "User not found",
+                });
+            }
+
+            if (user && !user.isEmailVerified) {
+                return response.status(400).json({
+                    error: "You have not activated your account. Please verify your email address first.",
+                });
+            }
+
+            // generate reset token
+            const resetToken = String(
+                Math.floor(Math.random() * 900000) + 100000
+            );
+
+            await prisma.user.update({
+                where: { email },
+                data: {
+                    password_reset_token: resetToken,
+                    password_reset_token_sent_time: new Date(),
+                },
+            });
+
+            // send email with reset token
+            const emailData: Email = {
+                from: ENV_VARS.FROM_EMAIL,
+                subject: "Reset Password",
+                to: email,
+                token: resetToken,
+                type: PASSWORD_RESET,
+            };
+            await addEmailToQueue(emailData);
+
+            return response.status(200).json({
+                success: true,
+                message: "Reset token sent to your email",
+            });
+        } catch (error) {
+            console.log("Error in forgotPassword: ", error);
+            return response.status(500).json({
+                error: "Internal server error",
+            });
+        }
+    }
+
+    static async resetPassword(request: Request, response: Response) {
+        const { resetToken, email, newPassword, confirmNewPassword } =
+            request.body;
+        if (!resetToken) {
+            return response.status(404).json({
+                error: "Reset token not found.",
+            });
+        }
+
+        try {
+            const user = await prisma.user.findUnique({
+                where: { email },
+            });
+            if (!user) {
+                return response.status(404).json({
+                    error: "User not found",
+                });
+            }
+
+            if (user && !user.isEmailVerified) {
+                return response.status(400).json({
+                    error: "You have not activated your account. Please verify your email address first.",
+                });
+            }
+
+            // check is token is valid
+            const isResetTokenMatch = user.password_reset_token === resetToken;
+            if (!isResetTokenMatch) {
+                return response.status(401).json({
+                    error: "Incorrect password reset token",
+                });
+            }
+
+            const newPasswordData = resetPasswordSchemaValidation.safeParse({
+                newPassword,
+                confirmNewPassword,
+            });
+            if (newPasswordData.error) {
+                return response.status(400).json({
+                    error: newPasswordData.error.message,
+                });
+            }
+
+            // reset the password
+            const newPasswordHash = await bcrypt.hash(newPassword, 10);
+            await prisma.user.update({
+                where: { email },
+                data: {
+                    password: newPasswordHash,
+                },
+            });
+
+            return response.status(200).json({
+                success: true,
+                message: "Password Reset Successful",
+            });
+        } catch (error) {
+            console.log("Error in resetPassword: ", error);
+            return response.status(500).json({
+                error: "Internal server error",
+            });
+        }
+    }
 }
 
 export default AuthHandler;

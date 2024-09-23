@@ -4,7 +4,12 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import { ENV_VARS } from "../utils/envVariables.js";
-import { Email, VERIFY_EMAIL, WELCOME_EMAIL } from "../types/emailType.js";
+import {
+    Email,
+    PASSWORD_RESET,
+    VERIFY_EMAIL,
+    WELCOME_EMAIL,
+} from "../types/emailType.js";
 
 const transporter = nodemailer.createTransport({
     host: ENV_VARS.SMTP_HOST,
@@ -36,6 +41,15 @@ export async function sendEmail(email: Email, type: number) {
                 htmlBody = await ejs.renderFile(
                     path.resolve(__dirname, "../views/emails/welcomeEmail.ejs"),
                     { name: email.to }
+                );
+                break;
+            case PASSWORD_RESET:
+                htmlBody = await ejs.renderFile(
+                    path.resolve(
+                        __dirname,
+                        "../views/emails/resetPasswordEmail.ejs"
+                    ),
+                    { resetToken: email.token }
                 );
                 break;
 

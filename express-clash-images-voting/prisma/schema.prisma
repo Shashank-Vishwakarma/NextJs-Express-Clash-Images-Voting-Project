@@ -18,9 +18,9 @@ model User {
   email_verified_time DateTime?
   isEmailVerified     Boolean?  @default(false)
 
-  password             String
-  password_reset_token String?
-  token_sent_time      DateTime?
+  password                       String
+  password_reset_token           String?
+  password_reset_token_sent_time DateTime?
 
   created_at DateTime @default(now())
 }

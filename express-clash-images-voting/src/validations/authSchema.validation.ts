@@ -22,8 +22,8 @@ export const signUpSchemaValidation = z
             ctx.addIssue({
                 code: "custom",
                 message: "Passwords do not match",
+                path: ["confirmPassword"],
             });
-            ctx.path.push("confirmPassword");
         }
     });
 
@@ -33,3 +33,22 @@ export const loginSchemaValidation = z.object({
         .email({ message: "Invalid email address" }),
     password: z.string({ message: "Password is required" }),
 });
+
+export const resetPasswordSchemaValidation = z
+    .object({
+        newPassword: z.string().min(6, {
+            message: "New Password must be of atleast 6 characters",
+        }),
+        confirmNewPassword: z.string().min(6, {
+            message: "Confirm New Password must be of atleast 6 characters",
+        }),
+    })
+    .superRefine(({ newPassword, confirmNewPassword }, ctx) => {
+        if (newPassword !== confirmNewPassword) {
+            ctx.addIssue({
+                code: "custom",
+                message: "Passwords do not match",
+                path: ["confirmNewPassword"],
+            });
+        }
+    });
