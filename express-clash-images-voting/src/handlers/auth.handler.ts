@@ -213,10 +213,14 @@ class AuthHandler {
                     isEmailVerified: true,
                 },
             });
-            return response.status(200).json({
-                success: true,
-                message: "Email verified successfully. Please sign in.",
-            });
+
+            return response
+                .status(200)
+                .json({
+                    success: true,
+                    message: "Email verified successfully. Please sign in.",
+                })
+                .redirect(`${ENV_VARS.CLIENT_APP_URL}/login`);
         } catch (error) {
             console.log("Error in verifyEmail: ", error);
             return response.status(500).json({
