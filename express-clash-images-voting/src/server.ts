@@ -10,8 +10,15 @@ import authRouter from "./routes/auth.routes.js";
 
 // bullmq workers to consume the jobs
 import "./queue/jobs.js";
+import {
+    rateLimiterForApp,
+    rateLimiterForAuth,
+} from "./middlewares/rateLimiting.js";
 
 const app: Application = express();
+
+// rate limit for application
+app.use(rateLimiterForApp);
 
 // view engine setup
 app.set("view engine", "ejs");
@@ -38,7 +45,7 @@ app.use(
 app.use(helmet());
 
 // auth routes
-app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/auth", rateLimiterForAuth, authRouter);
 
 app.listen(ENV_VARS.APPLICATION_PORT, () => {
     console.log(
