@@ -124,21 +124,21 @@ class AuthHandler {
             // generate access token
             const accessToken = generateToken(user.id);
 
-            return response
-                .cookie("access_token", accessToken, {
-                    httpOnly: true,
-                    sameSite: "strict",
-                })
-                .status(200)
-                .json({
-                    success: true,
-                    message: "Login successful",
-                    user: {
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                    },
-                });
+            response.cookie("access_token", accessToken, {
+                maxAge: 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: "strict",
+            });
+
+            return response.status(200).json({
+                success: true,
+                message: "Login successful",
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                },
+            });
         } catch (error) {
             console.log("Error in login: ", error);
             if (error instanceof ZodError) {

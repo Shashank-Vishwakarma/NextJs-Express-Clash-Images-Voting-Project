@@ -2,37 +2,37 @@
 
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-export async function loginAction(
-    prevState: { message: string },
-    formData: FormData
-) {
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+// export async function loginAction(
+//     prevState: { message: string },
+//     formData: FormData
+// ) {
+//     const email = formData.get("email") as string;
+//     const password = formData.get("password") as string;
 
-    try {
-        const response: AxiosResponse = await axios.post(
-            `${process.env.EXPRESS_SERVER_URL}${process.env.EXPRESS_SERVER_LOGIN_ENDPOINT}`,
-            {
-                email,
-                password,
-            }
-        );
+// try {
+//     const response: AxiosResponse = await axios.post(
+//         `${process.env.EXPRESS_SERVER_URL}${process.env.EXPRESS_SERVER_LOGIN_ENDPOINT}`,
+//         {
+//             email,
+//             password,
+//         }
+//     );
 
-        if (response.data?.error) {
-            prevState.message = response.data?.error;
-        } else {
-            prevState.message = response.data?.message;
-        }
+//     if (response.data?.error) {
+//         prevState.message = response.data?.error;
+//     } else {
+//         prevState.message = response.data?.message;
+//     }
 
-        return response.data;
-    } catch (error) {
-        console.log(
-            "Error in loginAction: ",
-            (error as AxiosError).response?.data?.error || error
-        );
-        return { error: (error as AxiosError).response?.data?.error };
-    }
-}
+//     return response.data;
+// } catch (error) {
+//     console.log(
+//         "Error in loginAction: ",
+//         (error as AxiosError).response?.data?.error || error
+//     );
+//     return { error: (error as AxiosError).response?.data?.error };
+// }
+// }
 
 export async function signupAction(
     prevState: { message: string },
@@ -141,3 +141,19 @@ export async function resetPasswordAction(
         return { error: (error as AxiosError).response?.data?.error };
     }
 }
+
+// export async function logoutAction() {
+//     try {
+//         const response: AxiosResponse = await axios.get(
+//             `${process.env.EXPRESS_SERVER_URL}${process.env.EXPRESS_SERVER_LOGOUT_ENDPOINT}`
+//         );
+
+//         return response.data;
+//     } catch (error) {
+//         console.log(
+//             "Error in logoutAction: ",
+//             (error as AxiosError).response?.data || error
+//         );
+//         return { error: (error as AxiosError).response?.data?.error };
+//     }
+// }

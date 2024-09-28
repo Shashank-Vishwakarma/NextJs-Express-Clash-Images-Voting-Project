@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-    // check for authentication
-
     try {
-        const user = false;
-        if (!user) {
+        const token = request.cookies.get("access_token")?.value;
+        if (!token) {
             return NextResponse.redirect(new URL("/login", request.url));
+        } else {
+            return NextResponse.next();
         }
     } catch (error) {
         console.log("Error in middleware: ", error);
@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
     }
 }
 
+// protected routes
 export const config = {
-    matcher: ["/"],
+    matcher: ["/dashboard"],
 };

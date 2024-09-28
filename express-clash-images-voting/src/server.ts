@@ -51,8 +51,9 @@ app.use(cookieParser());
 // middleware for cors
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: [ENV_VARS.CLIENT_APP_URL],
         methods: ["GET", "POST"],
+        credentials: true,
     })
 );
 
