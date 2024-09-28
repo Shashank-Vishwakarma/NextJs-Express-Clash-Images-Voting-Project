@@ -4,6 +4,7 @@ import helmet from "helmet";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import fileUpload from "express-fileupload";
 
 import { ENV_VARS } from "./utils/envVariables.js";
 import authRouter from "./routes/auth.routes.js";
@@ -14,8 +15,22 @@ import {
     rateLimiterForApp,
     rateLimiterForAuth,
 } from "./middlewares/rateLimiting.js";
+import clashRouter from "./routes/clash.routes.js";
+import verifyToken from "./middlewares/verifyToken.middleware.js";
 
 const app: Application = express();
+
+// file uploads
+app.use(
+    fileUpload({
+        limits: {
+            fileSize: 1024 * 1024 * 5,
+        },
+    })
+);
+
+// server static files
+app.use(express.static("public"));
 
 // rate limit for application
 app.use(rateLimiterForApp);
@@ -46,6 +61,9 @@ app.use(helmet());
 
 // auth routes
 app.use("/api/v1/auth", rateLimiterForAuth, authRouter);
+
+// clash routes
+app.use("/api/v1/clash", verifyToken, clashRouter);
 
 app.listen(ENV_VARS.APPLICATION_PORT, () => {
     console.log(

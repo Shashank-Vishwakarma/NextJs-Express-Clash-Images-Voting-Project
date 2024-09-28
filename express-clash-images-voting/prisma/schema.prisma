@@ -23,4 +23,34 @@ model User {
   password_reset_token_sent_time DateTime?
 
   created_at DateTime @default(now())
+
+  clashes Clash[]
+  Comment Comment[]
+}
+
+model Clash {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String
+  image       String
+  expires_at  String
+  created_at  DateTime @default(now())
+
+  comments Comment[]
+}
+
+model Comment {
+  id    String @id @default(uuid())
+  title String
+
+  created_at DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  clashId String
+  Clash   Clash  @relation(fields: [clashId], references: [id])
 }
