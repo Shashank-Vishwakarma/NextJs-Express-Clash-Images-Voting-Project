@@ -22,6 +22,12 @@ class ClashHandler {
                 });
             }
 
+            if (!body?.expires_at) {
+                return response.status(404).json({
+                    error: "Please provide an expiry date",
+                });
+            }
+
             if (!request.files || Object.keys(request.files).length === 0) {
                 return response.status(400).json({
                     error: "Image is required",
@@ -44,9 +50,7 @@ class ClashHandler {
                     title: payload.data.title,
                     description: payload.data.description,
                     image: `http://localhost:5000/uploads/${fileName}`,
-                    expires_at: moment(new Date())
-                        .add(1 * 24 * 60 * 60 * 1000, "milliseconds")
-                        .toLocaleString(),
+                    expires_at: body.expires_at,
                     userId: request.user.id,
                 },
             });

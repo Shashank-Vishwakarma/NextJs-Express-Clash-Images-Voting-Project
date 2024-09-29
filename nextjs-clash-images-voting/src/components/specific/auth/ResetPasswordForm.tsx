@@ -30,7 +30,9 @@ export default function ResetPasswordForm() {
     }, [state]);
 
     return (
-        <form action={resetPasswordFormAction}>
+        <form
+            action={resetPasswordFormAction}
+            onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4">
                 <Label htmlFor="resetToken">Token</Label>
                 <Input

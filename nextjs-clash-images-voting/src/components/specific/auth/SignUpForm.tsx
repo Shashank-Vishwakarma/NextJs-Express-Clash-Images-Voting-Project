@@ -25,7 +25,7 @@ export default function SignUpForm() {
     }, [state]);
 
     return (
-        <form action={signupFormAction}>
+        <form action={signupFormAction} onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4">
                 <Label htmlFor="name">Name</Label>
                 <Input id="name" name="name" placeholder="Name" />

@@ -30,7 +30,9 @@ export default function ForgotPasswordForm() {
     }, [state]);
 
     return (
-        <form action={forgotPasswordFormAction}>
+        <form
+            action={forgotPasswordFormAction}
+            onSubmit={(e) => e.preventDefault()}>
             <div className="mt-4">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" placeholder="Email" />
