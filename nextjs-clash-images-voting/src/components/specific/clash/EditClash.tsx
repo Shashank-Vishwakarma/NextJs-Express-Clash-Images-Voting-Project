@@ -3,14 +3,13 @@
 import SubmitButton from "@/components/shared/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -25,25 +24,28 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useState } from "react";
 import axios, { AxiosResponse } from "axios";
-import { useRouter } from "next/navigation";
+import { Clash } from "@/app/dashboard/page";
+import Image from "next/image";
 
-export default function CreateClash() {
-    const [openDialog, setOpenDialog] = useState(false);
-
+export default function EditClash({
+    clash,
+    open,
+    setOpen,
+}: {
+    clash: Clash;
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
     const [clashData, setClashData] = useState({
-        title: "",
-        description: "",
+        title: clash.title,
+        description: clash.description,
     });
 
-    const [image, setImage] = useState<File | null>(null);
-    const [date, setDate] = useState<Date>();
+    const [image, setImage] = useState<File | null>();
+    const [date, setDate] = useState<Date>(new Date(clash.expires_at));
     const [loading, setLoading] = useState(false);
 
-    const router = useRouter();
-
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setImage("");
-
         const file = e.target.files?.[0];
         if (file) {
             setImage(file);
@@ -57,15 +59,17 @@ export default function CreateClash() {
         const formData = new FormData();
         formData.append("title", clashData.title);
         formData.append("description", clashData.description);
-        formData.append("image", image as File);
+        formData.append("expires_at", date.toString());
 
-        if (date) {
-            formData.append("expires_at", date.toString());
+        if (image) {
+            formData.append("image", image as File);
         }
 
+        console.log(formData);
+
         try {
-            const response: AxiosResponse = await axios.post(
-                `http://localhost:5000/api/v1/clash`,
+            const response: AxiosResponse = await axios.put(
+                `http://localhost:5000/api/v1/clash/update/${clash.id}`,
                 formData,
                 {
                     headers: {
@@ -75,34 +79,25 @@ export default function CreateClash() {
                 }
             );
 
-            setClashData({ title: "", description: "" });
-            setImage("");
-            setDate(null);
-            setOpenDialog(false);
+            console.log(response);
 
-            router.refresh();
+            setOpen(false);
 
             setLoading(false);
-            console.log(response);
         } catch (error) {
             console.log("Error in handleSubmit for creating clash: ", error);
         } finally {
             setLoading(false);
         }
-
-        console.log(clashData, image, date);
     };
 
     return (
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogTrigger asChild>
-                <Button className="w-full">Create new clash</Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent
                 onInteractOutside={(e) => e.preventDefault()}
                 aria-describedby="description">
                 <DialogHeader>
-                    <DialogTitle>Create new clash</DialogTitle>
+                    <DialogTitle>Edit this clash</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit}>
@@ -118,7 +113,6 @@ export default function CreateClash() {
                                     title: e.target.value,
                                 })
                             }
-                            placeholder="Enter Title"
                         />
                     </div>
 
@@ -135,9 +129,7 @@ export default function CreateClash() {
                                 })
                             }
                             aria-describedby="description"
-                            placeholder="Description">
-                            Enter Description
-                        </Textarea>
+                        />
                     </div>
 
                     <div className="mt-4">
@@ -147,6 +139,12 @@ export default function CreateClash() {
                             name="image"
                             onChange={handleImageChange}
                             type="file"
+                        />
+                        <Image
+                            src={clash.image}
+                            width={50}
+                            height={50}
+                            alt="Clash Image preview"
                         />
                     </div>
 
@@ -174,7 +172,7 @@ export default function CreateClash() {
                                 <Calendar
                                     mode="single"
                                     selected={date}
-                                    onSelect={setDate}
+                                    onSelect={(date) => setDate(date!)}
                                     initialFocus
                                 />
                             </PopoverContent>
@@ -185,7 +183,7 @@ export default function CreateClash() {
                         {loading ? (
                             <SubmitButton pending={true} text="Loading..." />
                         ) : (
-                            <SubmitButton pending={false} text="Create Clash" />
+                            <SubmitButton pending={false} text="Edit Clash" />
                         )}
                     </div>
                 </form>

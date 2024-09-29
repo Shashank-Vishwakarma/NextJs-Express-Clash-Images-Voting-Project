@@ -134,6 +134,7 @@ class ClashHandler {
                     userId: true,
                     title: true,
                     description: true,
+                    expires_at: true,
                 },
             });
             if (!clash) {
@@ -150,7 +151,7 @@ class ClashHandler {
                 });
             }
 
-            const image: UploadedFile = request.files.image as UploadedFile;
+            const image: UploadedFile = request.files?.image as UploadedFile;
             let imageUrl = "";
             if (image) {
                 const isImageValid = validateImage(image.size, image.mimetype);
@@ -204,6 +205,7 @@ class ClashHandler {
                 select: {
                     id: true,
                     userId: true,
+                    image: true,
                 },
             });
             if (!clash) {
@@ -219,6 +221,11 @@ class ClashHandler {
                     error: "You are Unauthorized to delete this Clash",
                 });
             }
+
+            // delete the file from server also
+            const oldFileName = clash.image.split("/")[-1];
+            console.log(oldFileName);
+            removeImage(oldFileName);
 
             await prisma.clash.delete({
                 where: {

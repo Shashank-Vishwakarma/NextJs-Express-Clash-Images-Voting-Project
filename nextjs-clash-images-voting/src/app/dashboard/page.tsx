@@ -48,10 +48,19 @@ export default function Dashboard() {
                 <CreateClash />
             </div>
 
-            <div>
-                {clashes.map((clash) => (
-                    <ClashCard key={clash.id} clash={clash} />
-                ))}
+            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto">
+                {clashes.length > 0 &&
+                    clashes.map((clash) => (
+                        <ClashCard key={clash.id} clash={clash} />
+                    ))}
+
+                {clashes.length === 0 && (
+                    <div className="w-full h-full">
+                        <h1 className="text-center font-bold text-5xl">
+                            No clash found
+                        </h1>
+                    </div>
+                )}
             </div>
         </div>
     );
