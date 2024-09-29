@@ -16,5 +16,5 @@ export async function middleware(request: NextRequest) {
 
 // protected routes
 export const config = {
-    matcher: ["/dashboard"],
+    matcher: ["/dashboard", "/clash/items/:path*"],
 };
