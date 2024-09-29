@@ -39,7 +39,21 @@ model Clash {
   expires_at  String
   created_at  DateTime @default(now())
 
+  clashItem ClashItem[]
+
   comments Comment[]
+}
+
+model ClashItem {
+  id String @id @default(uuid())
+
+  image String
+  count BigInt @default(0)
+
+  clashId String @unique
+  clash   Clash  @relation(fields: [clashId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 model Comment {
