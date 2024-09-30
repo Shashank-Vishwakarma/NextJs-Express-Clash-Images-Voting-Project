@@ -48,9 +48,9 @@ model ClashItem {
   id String @id @default(uuid())
 
   image String
-  count BigInt @default(0)
+  count Int    @default(0)
 
-  clashId String @unique
+  clashId String
   clash   Clash  @relation(fields: [clashId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())

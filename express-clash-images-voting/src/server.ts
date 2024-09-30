@@ -16,7 +16,6 @@ import {
     rateLimiterForAuth,
 } from "./middlewares/rateLimiting.js";
 import clashRouter from "./routes/clash.routes.js";
-import verifyToken from "./middlewares/verifyToken.middleware.js";
 
 const app: Application = express();
 
@@ -64,7 +63,7 @@ app.use(helmet());
 app.use("/api/v1/auth", rateLimiterForAuth, authRouter);
 
 // clash routes
-app.use("/api/v1/clash", verifyToken, clashRouter);
+app.use("/api/v1/clash", clashRouter);
 
 app.listen(ENV_VARS.APPLICATION_PORT, () => {
     console.log(

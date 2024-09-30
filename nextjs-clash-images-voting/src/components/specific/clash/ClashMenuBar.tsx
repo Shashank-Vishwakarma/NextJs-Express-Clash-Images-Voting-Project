@@ -10,6 +10,7 @@ import {
 import { EllipsisVertical } from "lucide-react";
 import { Suspense, useState } from "react";
 import dynamic from "next/dynamic";
+import toast from "react-hot-toast";
 
 const EditClashDialog = dynamic(() => import("./EditClash"));
 const DeleteClashDialog = dynamic(() => import("./DeleteClashDialog"));
@@ -30,7 +31,14 @@ export default function ClashMenuBar({ clash }: { clash: Clash }) {
                         onClick={() => setOpen(true)}>
                         Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer">
+                    <DropdownMenuItem
+                        className="cursor-pointer"
+                        onClick={() => {
+                            navigator.clipboard.writeText(
+                                `http://localhost:3000/clash/${clash.id}`
+                            );
+                            toast.success("Link copied to clipboard");
+                        }}>
                         Copy Link
                     </DropdownMenuItem>
                     <DropdownMenuItem

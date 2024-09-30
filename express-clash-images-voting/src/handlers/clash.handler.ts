@@ -1,7 +1,6 @@
 import { Response } from "express";
 import { clashSchemaValidation } from "../validations/clashSchema.validation.js";
 import prisma from "../database/prisma.js";
-import moment from "moment";
 import { UserRequestInterface } from "../middlewares/verifyToken.middleware.js";
 import { validateImage } from "../utils/validateImage.js";
 import { UploadedFile } from "express-fileupload";
@@ -105,6 +104,13 @@ class ClashHandler {
                         },
                         orderBy: {
                             created_at: "desc",
+                        },
+                    },
+                    clashItem: {
+                        select: {
+                            id: true,
+                            count: true,
+                            image: true,
                         },
                     },
                 },
@@ -239,6 +245,68 @@ class ClashHandler {
             });
         } catch (error) {
             console.log("Error in updateClash: ", error.message);
+            return response.status(500).json({
+                error: "Internal server error",
+            });
+        }
+    }
+
+    static async createClashItem(
+        request: UserRequestInterface,
+        response: Response
+    ) {
+        try {
+            const { clashId } = request.body;
+            const clash = await prisma.clash.findUnique({
+                where: {
+                    id: clashId,
+                },
+            });
+            if (!clash) {
+                return response.status(404).json({
+                    error: "Clash not found",
+                });
+            }
+
+            const files = request.files.images as UploadedFile[];
+            if (!files || Object.keys(files).length === 0) {
+                return response.status(400).json({
+                    error: "Both images are required",
+                });
+            }
+
+            if (files.length !== 2) {
+                return response.status(400).json({
+                    error: "Please upload 2 images",
+                });
+            }
+
+            files.map(async (file) => {
+                const isImageValid = validateImage(file.size, file.mimetype);
+                if (!isImageValid) {
+                    return response.status(422).json({
+                        error: "Image size is too large. Max size is 5MB, or incorrect image type.",
+                    });
+                }
+
+                const fileName = uploadImage(file);
+
+                const clashItem = await prisma.clashItem.create({
+                    data: {
+                        image: `http://localhost:5000/uploads/${fileName}`,
+                        clashId: clashId,
+                    },
+                });
+
+                console.log(clashItem);
+            });
+
+            return response.json({
+                success: true,
+                message: "Clash items created successfully",
+            });
+        } catch (error) {
+            console.log("Error in createClashItem: ", error.message);
             return response.status(500).json({
                 error: "Internal server error",
             });

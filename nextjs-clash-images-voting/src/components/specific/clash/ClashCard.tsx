@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import ClashMenuBar from "./ClashMenuBar";
+import Link from "next/link";
 
 export default function ClashCard({ clash }: { clash: Clash }) {
     return (
@@ -29,7 +30,9 @@ export default function ClashCard({ clash }: { clash: Clash }) {
                 <CardDescription>{clash.description}</CardDescription>
             </CardContent>
             <CardFooter>
-                <Button>See Clash</Button>
+                <Link href={`/clash/items/${clash.id}`}>
+                    <Button>See Clash</Button>
+                </Link>
             </CardFooter>
         </Card>
     );

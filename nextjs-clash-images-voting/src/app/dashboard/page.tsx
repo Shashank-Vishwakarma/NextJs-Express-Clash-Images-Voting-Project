@@ -8,12 +8,19 @@ import { authContext } from "@/context/AuthContext";
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
 
+type ClashItem = {
+    id: string;
+    count: number;
+    image: string;
+};
+
 export type Clash = {
     id: string;
     title: string;
     description: string;
     image: string;
     expires_at: string;
+    clashItem: ClashItem[];
 };
 
 export default function Dashboard() {
