@@ -4,6 +4,7 @@ import Navbar from "@/components/base/Navbar";
 import LogoutAlertDialog from "@/components/specific/auth/LogoutAlertDialog";
 import ClashCard from "@/components/specific/clash/ClashCard";
 import CreateClash from "@/components/specific/clash/CreateClash";
+import { Comment } from "@/components/specific/clash/ViewClashItems";
 import { authContext } from "@/context/AuthContext";
 import axios, { AxiosResponse } from "axios";
 import { useContext, useEffect, useState } from "react";
@@ -21,6 +22,7 @@ export type Clash = {
     image: string;
     expires_at: string;
     clashItem: ClashItem[];
+    comments: Comment[];
 };
 
 export default function Dashboard() {

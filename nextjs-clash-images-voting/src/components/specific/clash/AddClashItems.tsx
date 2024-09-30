@@ -1,8 +1,8 @@
 "use client";
 
 import { Clash } from "@/app/dashboard/page";
+import Navbar from "@/components/base/Navbar";
 import { Button } from "@/components/ui/button";
-// import { fetchClashById } from "@/fetch/fetchClashById";
 import axios, { AxiosResponse } from "axios";
 import { Upload } from "lucide-react";
 import Image from "next/image";
@@ -36,19 +36,6 @@ export default function AddClashItems({
             setImage(e.target.files[0]);
         }
     };
-
-    // useEffect(() => {
-    //     const fetchClashData = async () => {
-    //         const clash = await fetchClashById(id as string);
-    //         if (clash.clash) {
-    //             setClashData(clash.clash);
-    //         } else {
-    //             setClashData(null);
-    //         }
-    //     };
-
-    //     fetchClashData();
-    // }, []);
 
     const handleSubmit = async () => {
         const formData = new FormData();
@@ -84,6 +71,11 @@ export default function AddClashItems({
 
     return (
         <>
+            <Navbar setOpen={setOpen} />
+            <div className="flex justify-center items-center flex-col m-4">
+                <h1 className="font-bold text-2xl">{clashData?.title}</h1>
+                <p>{clashData?.description}</p>
+            </div>
             <div className="flex flex-col justify-center p-10">
                 <div className="flex flex-row items-center justify-around">
                     <div

@@ -8,4 +8,5 @@ export const defaultJobOptions = {
         type: "exponential",
         delay: 2000,
     },
+    delay: 500,
 };

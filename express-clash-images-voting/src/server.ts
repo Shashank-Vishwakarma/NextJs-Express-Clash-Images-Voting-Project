@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import { Server } from "socket.io";
 
 import { ENV_VARS } from "./utils/envVariables.js";
 import authRouter from "./routes/auth.routes.js";
@@ -18,6 +19,21 @@ import {
 import clashRouter from "./routes/clash.routes.js";
 
 const app: Application = express();
+
+// web socket setup
+import { createServer } from "http";
+import { setUpSocket } from "./socket.js";
+const server = createServer(app);
+
+export const io = new Server(server, {
+    cors: {
+        origin: ["http://localhost:3000"],
+        credentials: true,
+        methods: ["POST", "GET"],
+    },
+});
+
+setUpSocket(io);
 
 // file uploads
 app.use(
@@ -65,7 +81,7 @@ app.use("/api/v1/auth", rateLimiterForAuth, authRouter);
 // clash routes
 app.use("/api/v1/clash", clashRouter);
 
-app.listen(ENV_VARS.APPLICATION_PORT, () => {
+server.listen(ENV_VARS.APPLICATION_PORT, () => {
     console.log(
         `Express server listening on port ${ENV_VARS.APPLICATION_PORT}`
     );

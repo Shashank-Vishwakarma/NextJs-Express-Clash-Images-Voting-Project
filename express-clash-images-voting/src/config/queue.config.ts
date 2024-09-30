@@ -7,3 +7,13 @@ export const emailQueue = new Queue(ENV_VARS.EMAIL_QUEUE_NAME, {
     connection: redis,
     defaultJobOptions: defaultJobOptions,
 });
+
+export const votingQueue = new Queue(ENV_VARS.VOTE_QUEUE_NAME, {
+    connection: redis,
+    defaultJobOptions: defaultJobOptions,
+});
+
+export const commentQueue = new Queue(ENV_VARS.COMMENT_QUEUE_NAME, {
+    connection: redis,
+    defaultJobOptions: defaultJobOptions,
+});

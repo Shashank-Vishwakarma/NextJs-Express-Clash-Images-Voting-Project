@@ -12,6 +12,8 @@ export const ENV_VARS = {
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT: process.env.REDIS_PORT,
     EMAIL_QUEUE_NAME: process.env.EMAIL_QUEUE_NAME,
+    VOTE_QUEUE_NAME: process.env.VOTE_QUEUE_NAME,
+    COMMENT_QUEUE_NAME: process.env.COMMENT_QUEUE_NAME,
     KAFKA_CLIENT_ID: process.env.KAFKA_CLIENT_ID,
     KAFKA_BROKER: process.env.KAFKA_BROKER,
 };
